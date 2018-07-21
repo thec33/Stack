@@ -32,7 +32,7 @@ public class HammerScript : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		
-		ValidPlacementScript.validPlacement = true;
+		
 		noMaterialsText.gameObject.SetActive(false);
 		
 		CreateRampPreview();
@@ -166,30 +166,18 @@ public class HammerScript : MonoBehaviour {
 			
 			
 			
-			RaycastHit hit;
-			//if we hit something
-			 if (Physics.Raycast(fpsCam.transform.position, fpsCam.transform.forward, out hit, range, 9))
-			 {
-				 BuildableObject target = hit.transform.GetComponent<BuildableObject>();
-				 if(target != null && ValidPlacementScript.validPlacement == true)
-				 {
+			
 					 if(ItemSelect.angleOfSelected > 180)
 					 {
 						reserveMaterials--;
-						GameObject buildGameObject = Instantiate(buildRampObject, hit.point, Quaternion.LookRotation(previewRampObject.transform.forward, previewRampObject.transform.up));
+						GameObject buildGameObject = Instantiate(buildRampObject, previewRampObject.transform.position, Quaternion.LookRotation(previewRampObject.transform.forward, previewRampObject.transform.up));
 						
 					 }
 					 else if(ItemSelect.angleOfSelected < 180)
 					 {
 						reserveMaterials--;
-						GameObject buildGameObject = Instantiate(buildFloorObject, hit.point, Quaternion.LookRotation(previewRampObject.transform.forward, previewRampObject.transform.up));
+						GameObject buildGameObject = Instantiate(buildFloorObject, previewFloorObject.transform.position, Quaternion.LookRotation(previewFloorObject.transform.forward, previewFloorObject.transform.up));
 					 }
-
-				 }
-
-				
-				 
-			 }
 			 
 		}
 
@@ -206,6 +194,9 @@ public class HammerScript : MonoBehaviour {
 */
 		void ControlPreview()
 		{
+
+			
+
 			//this is to prevent having two previews when using the radial menu and holding the preview button
 			previewFloorObject.SetActive(false);
 			previewRampObject.SetActive(false);
@@ -225,17 +216,18 @@ public class HammerScript : MonoBehaviour {
 			 {
 				 
 				previewRampObject.SetActive(true);
-				if(hit.collider == null)
+				if(hit.collider.tag == "Floor")
 				{
-					previewRampObject.transform.position = hit.point;
+					Vector3 placementSpot = new Vector3(Mathf.RoundToInt(hit.collider.bounds.ClosestPoint(hit.point).x/4)*4,Mathf.RoundToInt((hit.collider.bounds.ClosestPoint(hit.point).y)/4)*4, Mathf.RoundToInt(hit.collider.bounds.ClosestPoint(hit.point).z/4)*4); //grid placement
+					previewRampObject.transform.position = placementSpot;
 				}
-				else if(hit.transform.gameObject)
+				else if(hit.collider.tag == "BuiltItem")
 				{
-					
-					previewRampObject.transform.position = hit.collider.bounds.ClosestPoint(hit.point);
+					Vector3 placementSpot = new Vector3(Mathf.RoundToInt(hit.collider.bounds.ClosestPoint(hit.point).x/4)*4,(Mathf.RoundToInt((hit.collider.bounds.ClosestPoint(hit.point).y)/4)*4)+2, Mathf.RoundToInt(hit.collider.bounds.ClosestPoint(hit.point).z/4)*4); //grid placement
+					previewRampObject.transform.position = placementSpot;
 				}
 
-				//below this works
+				//changing material of preview
 				if(ValidPlacementScript.validPlacement)
 				{
 					previewRampObject.GetComponent<MeshRenderer>().material = validMaterial;
@@ -261,14 +253,17 @@ public class HammerScript : MonoBehaviour {
 			if (Physics.Raycast(fpsCam.transform.position, fpsCam.transform.forward, out hit, range, 9))
 			 {
 				previewFloorObject.SetActive(true);
-				if(hit.collider == null)
+				if(hit.collider.tag == "Floor")
 				{
-					previewFloorObject.transform.position = hit.point;
+					Vector3 placementSpot = new Vector3(Mathf.RoundToInt(hit.collider.bounds.ClosestPoint(hit.point).x/4)*4,(Mathf.RoundToInt((hit.collider.bounds.ClosestPoint(hit.point).y)/4)*4)+0.2f, Mathf.RoundToInt(hit.collider.bounds.ClosestPoint(hit.point).z/4)*4); //grid placement
+					previewFloorObject.transform.position = placementSpot;
 				}
-				else if(hit.transform.gameObject)
+				if(hit.collider.tag == "BuiltItem")
 				{
+					Vector3 placementSpot = new Vector3(Mathf.RoundToInt(hit.collider.bounds.ClosestPoint(hit.point).x/4)*4,(Mathf.RoundToInt(hit.collider.bounds.ClosestPoint(hit.point).y/4)*4)+2, Mathf.RoundToInt(hit.collider.bounds.ClosestPoint(hit.point).z/4)*4); //grid placement
+					previewFloorObject.transform.position = placementSpot;
+					Debug.Log("test");
 					
-					previewFloorObject.transform.position = hit.collider.bounds.ClosestPoint(hit.point);
 				}
 
 				if(ValidPlacementScript.validPlacement)

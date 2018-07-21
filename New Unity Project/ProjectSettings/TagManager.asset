@@ -7,6 +7,9 @@ TagManager:
   - Fire
   - Floor
   - NotPlaceable
+  - BuiltItem
+  - Ramp
+  - BuiltFloor
   layers:
   - Default
   - TransparentFX

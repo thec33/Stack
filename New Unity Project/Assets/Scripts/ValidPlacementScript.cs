@@ -8,18 +8,21 @@ public class ValidPlacementScript : MonoBehaviour {
 public static bool validPlacement;
 
 		
+void Start()
+{
+	validPlacement = true;
+}
 
 		void OnTriggerStay(Collider other)
 			{
-				Debug.Log("I am touching someting");
-				if(other.tag == "NotPlaceable")
+				
+				if(other.gameObject.GetComponent<Rigidbody>() && other.tag == "NotPlaceable") //DO NOT HECCING CHANGE doesn't work with any other format
 				{
-					Debug.Log("not buildable entered");
+					Debug.Log("test1");
 					validPlacement = false;
 				}
-				if(other.gameObject.GetComponent(typeof(BuildableObject)))
+				else
 				{
-					Debug.Log("YEE");
 					validPlacement = true;
 				}
 			}

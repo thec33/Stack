@@ -16,15 +16,9 @@ public class PlayerLook : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		RotateCamera();
-	}
-
-	void RotateCamera()
-	{
-		//lock the cursor for every frame
 		if(!Input.GetKey(KeyCode.X))
 		{
-			Cursor.lockState = CursorLockMode.Locked;
+			RotateCamera();
 		}
 		else
 		{
@@ -32,7 +26,13 @@ public class PlayerLook : MonoBehaviour {
 			
 			Cursor.visible = true;
 		}
+		
+	}
 
+	void RotateCamera()
+	{
+		//lock the cursor for every frame
+			Cursor.lockState = CursorLockMode.Locked;
 		//get the mouse input
 		float mouseX = Input.GetAxisRaw("Mouse X");
 		float mouseY = Input.GetAxisRaw("Mouse Y");
